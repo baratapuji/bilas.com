@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bilas - Laundry Antar-Jemput, Beres dalam 2 Hari</title>
+<meta name="description" content="Laundry kiloan antar-jemput. Hitung harga sendiri, pesan lewat WhatsApp, cucian kembali bersih dan wangi.">
+
+<!-- 1. TAILWIND via CDN (versi dikunci supaya tampilan tidak berubah sewaktu-waktu) -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+<!-- 2. FONT dari Google Fonts (ada fallback jika offline) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- 3. KONFIGURASI TAILWIND: warna & font milik brand sendiri -->
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { ink:'#0f3d4c', sea:'#1b6f82', foam:'#f2f8f7', bubble:'#bfeee5', sun:'#ffd23f', coral:'#ff6b57' },
+      fontFamily: {
+        display: ['"Bricolage Grotesque"', 'Impact', 'sans-serif'],
+        body: ['Figtree', 'system-ui', 'sans-serif']
+      }
+    } }
+  }
+</script>
+
+<!-- 4. CSS TAMBAHAN (hal yang tidak ada di Tailwind) -->
+<style>
+  /* Gelembung di hero: satu-satunya animasi otomatis di halaman */
+  @keyframes naik { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+  .gelembung { animation: naik 6s ease-in-out infinite; }
+  /* Hormati pengguna yang mematikan animasi di perangkatnya */
+  @media (prefers-reduced-motion: reduce) { .gelembung { animation: none; } html { scroll-behavior: auto; } }
+  /* Slider kg: warna & bentuk pegangan */
+  input[type=range] { accent-color: #ffd23f; }
+  /* Isi FAQ: animasi buka-tutup halus */
+  .faq-isi { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
+  .faq-isi.buka { grid-template-rows: 1fr; }
+  .faq-isi > div { overflow: hidden; }
+  /* Fokus keyboard terlihat jelas */
+  :focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+</style>
+</head>
+
+<body class="bg-foam text-ink font-body antialiased">
+
+<!-- ================= NAVBAR ================= -->
+<header id="nav" class="sticky top-0 z-40 bg-foam/90 backdrop-blur transition-shadow">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <a href="#atas" class="flex items-center gap-2 font-display text-2xl font-extrabold">
+      <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C12 2 5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13z" fill="#1b6f82"/><circle cx="9.5" cy="14.5" r="1.6" fill="#bfeee5"/></svg>
+      Bilas
+    </a>
+    <nav class="hidden items-center gap-8 text-sm font-medium md:flex">
+      <a href="#cara" class="hover:text-sea">Cara kerja</a>
+      <a href="#harga" class="hover:text-sea">Harga</a>
+      <a href="#testimoni" class="hover:text-sea">Kata mereka</a>
+      <a href="#faq" class="hover:text-sea">Tanya jawab</a>
+      <a href="#pesan" class="rounded-full bg-ink px-5 py-2.5 text-white hover:bg-sea">Pesan jemputan</a>
+    </nav>
+    <button id="btnMenu" class="md:hidden rounded-lg p-2" aria-label="Buka menu" aria-expanded="false">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+  <!-- Menu mobile (disembunyikan sampai tombol ditekan) -->
+  <nav id="menuMobile" class="hidden border-t border-ink/10 px-5 pb-4 md:hidden">
+    <a href="#cara" class="block py-3">Cara kerja</a>
+    <a href="#harga" class="block py-3">Harga</a>
+    <a href="#testimoni" class="block py-3">Kata mereka</a>
+    <a href="#faq" class="block py-3">Tanya jawab</a>
+    <a href="#pesan" class="mt-2 block rounded-full bg-ink px-5 py-3 text-center text-white">Pesan jemputan</a>
+  </nav>
+</header>
+
+<main id="atas">
+
+<!-- ================= HERO + KALKULATOR ================= -->
+<section class="relative overflow-hidden">
+  <!-- gelembung dekorasi -->
+  <span class="gelembung absolute -left-10 top-24 h-40 w-40 rounded-full bg-bubble/60" aria-hidden="true"></span>
+  <span class="gelembung absolute right-1/3 top-10 h-16 w-16 rounded-full bg-bubble" style="animation-delay:-2s" aria-hidden="true"></span>
+  <span class="gelembung absolute bottom-10 left-1/2 h-24 w-24 rounded-full bg-sun/50" style="animation-delay:-4s" aria-hidden="true"></span>
+
+  <div class="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-10 lg:grid-cols-2 lg:pt-16">
+    <div>
+      <h1 class="font-display text-5xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl">
+        Cucian beres, kamu tinggal santai.
+      </h1>
+      <p class="mt-6 max-w-md text-lg leading-relaxed text-ink/80">
+        Kami jemput cucianmu, cuci dengan deterjen dan pewangi pilihan, lalu antar kembali dalam keadaan rapi. Selesai dalam 2 hari, atau 6 jam untuk paket kilat.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#pesan" class="rounded-full bg-ink px-7 py-3.5 font-bold text-white transition hover:bg-sea">Jadwalkan jemputan</a>
+        <a href="#harga" class="rounded-full border-2 border-ink px-7 py-3.5 font-bold transition hover:bg-ink hover:text-white">Lihat daftar harga</a>
+      </div>
+      <p class="mt-8 text-sm text-ink/70">Jemput setiap hari 07.00 sampai 20.00. Gratis ongkir untuk cucian 5 kg ke atas.</p>
+    </div>
+
+    <!-- KALKULATOR HARGA (bagian paling interaktif) -->
+    <div class="rounded-3xl bg-ink p-6 text-white shadow-2xl sm:p-8">
+      <h2 class="font-display text-2xl font-extrabold">Hitung cucianmu</h2>
+      <p class="mt-1 text-sm text-white/70">Geser berat cucian, pilih layanan. Harga langsung muncul.</p>
+
+      <div class="mt-6 flex items-end justify-between">
+        <label for="kg" class="font-medium">Berat cucian</label>
+        <output id="kgTampil" class="font-display text-4xl font-extrabold text-sun">5 kg</output>
+      </div>
+      <input id="kg" type="range" min="1" max="20" value="5" class="mt-2 w-full" aria-describedby="catatanMin">
+      <p id="catatanMin" class="mt-1 text-xs text-white/60">Tagihan minimal dihitung 3 kg.</p>
+
+      <fieldset class="mt-6">
+        <legend class="mb-2 font-medium">Layanan</legend>
+        <div class="grid gap-2" id="pilihLayanan">
+          <label class="flex cursor-pointer items-center justify-between rounded-xl border border-white/20 px-4 py-3 has-[:checked]:border-sun has-[:checked]:bg-white/10">
+            <span><input type="radio" name="layanan" value="reguler" checked class="mr-2 accent-yellow-300">Reguler <span class="text-sm text-white/60">selesai 2 hari</span></span>
+            <span class="text-sm">Rp7.000/kg</span>
+          </label>
+          <label class="flex cursor-pointer items-center justify-between rounded-xl border border-white/20 px-4 py-3 has-[:checked]:border-sun has-[:checked]:bg-white/10">
+            <span><input type="radio" name="layanan" value="kilat" class="mr-2 accent-yellow-300">Kilat <span class="text-sm text-white/60">selesai 6 jam</span></span>
+            <span class="text-sm">Rp12.000/kg</span>
+          </label>
+          <label class="flex cursor-pointer items-center justify-between rounded-xl border border-white/20 px-4 py-3 has-[:checked]:border-sun has-[:checked]:bg-white/10">
+            <span><input type="radio" name="layanan" value="setrika" class="mr-2 accent-yellow-300">Setrika saja <span class="text-sm text-white/60">selesai 1 hari</span></span>
+            <span class="text-sm">Rp5.000/kg</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <dl class="mt-6 space-y-2 border-t border-white/20 pt-5 text-sm">
+        <div class="flex justify-between"><dt class="text-white/70">Biaya cuci</dt><dd id="hCuci">-</dd></div>
+        <div class="flex justify-between"><dt class="text-white/70">Antar-jemput</dt><dd id="hOngkir">-</dd></div>
+        <div class="flex justify-between"><dt class="text-white/70">Perkiraan selesai</dt><dd id="hEstimasi">-</dd></div>
+        <div class="flex items-end justify-between pt-2"><dt class="font-bold">Total</dt><dd id="hTotal" class="font-display text-3xl font-extrabold text-sun">-</dd></div>
+      </dl>
+      <a id="btnWaHitung" href="#" target="_blank" rel="noopener" class="mt-6 block rounded-full bg-sun py-3.5 text-center font-bold text-ink transition hover:bg-white">Pesan paket ini lewat WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CARA KERJA (urutan langkah, jadi pakai nomor) ================= -->
+<section id="cara" class="bg-white py-20">
+  <div class="mx-auto max-w-6xl px-5">
+    <h2 class="max-w-xl font-display text-4xl font-extrabold leading-tight">Tiga langkah, tanpa keluar rumah</h2>
+    <ol class="mt-12 grid gap-10 md:grid-cols-3">
+      <li class="border-l-4 border-sun pl-6">
+        <span class="font-display text-5xl font-extrabold text-sea">1</span>
+        <h3 class="mt-2 text-xl font-bold">Pesan jemputan</h3>
+        <p class="mt-2 leading-relaxed text-ink/80">Isi formulir atau kirim pesan WhatsApp. Sebutkan alamat dan jam yang kamu mau.</p>
+      </li>
+      <li class="border-l-4 border-sun pl-6">
+        <span class="font-display text-5xl font-extrabold text-sea">2</span>
+        <h3 class="mt-2 text-xl font-bold">Kami cuci</h3>
+        <p class="mt-2 leading-relaxed text-ink/80">Pakaian dipisah berdasarkan warna, dicuci, dikeringkan, disetrika, lalu dilipat rapi.</p>
+      </li>
+      <li class="border-l-4 border-sun pl-6">
+        <span class="font-display text-5xl font-extrabold text-sea">3</span>
+        <h3 class="mt-2 text-xl font-bold">Cucian kembali</h3>
+        <p class="mt-2 leading-relaxed text-ink/80">Kurir mengantar ke depan pintu. Bayar tunai, transfer, atau QRIS saat cucian tiba.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= HARGA ================= -->
+<section id="harga" class="py-20">
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-[1fr_1.4fr]">
+    <div>
+      <h2 class="font-display text-4xl font-extrabold leading-tight">Harga jelas, tidak ada biaya tersembunyi</h2>
+      <p class="mt-4 max-w-sm leading-relaxed text-ink/80">Harga sudah termasuk deterjen, pewangi, dan plastik pembungkus. Ongkir hanya Rp5.000 untuk cucian di bawah 5 kg.</p>
+    </div>
+    <div class="divide-y divide-ink/15 rounded-2xl bg-white px-6 shadow-sm">
+      <div class="flex items-center justify-between gap-4 py-5"><div><h3 class="font-bold">Kiloan reguler</h3><p class="text-sm text-ink/70">Cuci, kering, setrika, lipat. Selesai 2 hari.</p></div><p class="whitespace-nowrap font-display text-xl font-extrabold">Rp7.000<span class="text-sm font-medium text-ink/60">/kg</span></p></div>
+      <div class="flex items-center justify-between gap-4 py-5"><div><h3 class="font-bold">Kiloan kilat</h3><p class="text-sm text-ink/70">Paket yang sama, selesai dalam 6 jam.</p></div><p class="whitespace-nowrap font-display text-xl font-extrabold">Rp12.000<span class="text-sm font-medium text-ink/60">/kg</span></p></div>
+      <div class="flex items-center justify-between gap-4 py-5"><div><h3 class="font-bold">Setrika saja</h3><p class="text-sm text-ink/70">Untuk pakaian yang sudah kamu cuci sendiri.</p></div><p class="whitespace-nowrap font-display text-xl font-extrabold">Rp5.000<span class="text-sm font-medium text-ink/60">/kg</span></p></div>
+      <div class="flex items-center justify-between gap-4 py-5"><div><h3 class="font-bold">Selimut dan bed cover</h3><p class="text-sm text-ink/70">Dicuci satuan, dikeringkan penuh.</p></div><p class="whitespace-nowrap font-display text-xl font-extrabold">Rp25.000<span class="text-sm font-medium text-ink/60">/buah</span></p></div>
+      <div class="flex items-center justify-between gap-4 py-5"><div><h3 class="font-bold">Sepatu</h3><p class="text-sm text-ink/70">Dibersihkan manual, bagian dalam disterilkan.</p></div><p class="whitespace-nowrap font-display text-xl font-extrabold">Rp35.000<span class="text-sm font-medium text-ink/60">/pasang</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONI ================= -->
+<section id="testimoni" class="bg-sea py-20 text-white">
+  <div class="mx-auto grid max-w-6xl gap-10 px-5 lg:grid-cols-[1.4fr_1fr]">
+    <figure>
+      <blockquote class="font-display text-3xl font-extrabold leading-snug sm:text-4xl">
+        Dulu cucian numpuk tiap akhir pekan. Sekarang hari Minggu-ku betul-betul libur.
+      </blockquote>
+      <figcaption class="mt-6 text-white/80">Nadia, karyawan swasta, pelanggan sejak 2024</figcaption>
+    </figure>
+    <div class="space-y-6">
+      <figure class="rounded-2xl bg-white/10 p-6">
+        <blockquote class="leading-relaxed">Kurirnya tepat waktu, baju tidak pernah tertukar. Paket kilat sangat menolong saat ada acara dadakan.</blockquote>
+        <figcaption class="mt-3 text-sm text-white/70">Rizky, mahasiswa</figcaption>
+      </figure>
+      <figure class="rounded-2xl bg-white/10 p-6">
+        <blockquote class="leading-relaxed">Harganya masuk akal untuk keluarga berempat. Bed cover kembali wangi dan benar-benar kering.</blockquote>
+        <figcaption class="mt-3 text-sm text-white/70">Bu Sari, ibu rumah tangga</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ (JavaScript accordion) ================= -->
+<section id="faq" class="py-20">
+  <div class="mx-auto max-w-3xl px-5">
+    <h2 class="font-display text-4xl font-extrabold">Pertanyaan yang sering muncul</h2>
+    <div class="mt-8 divide-y divide-ink/15 border-y border-ink/15" id="faqList">
+      <div>
+        <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-lg font-bold" aria-expanded="false">Bagaimana kalau ada pakaian yang luntur?<span class="faq-ikon text-2xl text-sea transition-transform">+</span></button>
+        <div class="faq-isi"><div><p class="pb-5 leading-relaxed text-ink/80">Kami memisahkan pakaian berwarna dan putih sebelum dicuci. Jika ada pakaian yang berisiko luntur, kami kabari dulu sebelum diproses.</p></div></div>
+      </div>
+      <div>
+        <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-lg font-bold" aria-expanded="false">Apakah pakaian saya bisa tertukar dengan milik orang lain?<span class="faq-ikon text-2xl text-sea transition-transform">+</span></button>
+        <div class="faq-isi"><div><p class="pb-5 leading-relaxed text-ink/80">Tidak. Setiap pesanan diberi label nama dan dicuci terpisah, jadi cucianmu tidak bercampur dengan pelanggan lain.</p></div></div>
+      </div>
+      <div>
+        <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-lg font-bold" aria-expanded="false">Bagaimana jika ada pakaian yang rusak atau hilang?<span class="faq-ikon text-2xl text-sea transition-transform">+</span></button>
+        <div class="faq-isi"><div><p class="pb-5 leading-relaxed text-ink/80">Kami mengganti sesuai nilai pakaian, maksimal 10 kali biaya cuci pesanan itu. Laporkan dalam 24 jam setelah cucian diterima.</p></div></div>
+      </div>
+      <div>
+        <button class="faq-btn flex w-full items-center justify-between gap-4 py-5 text-left text-lg font-bold" aria-expanded="false">Apa saja metode pembayarannya?<span class="faq-ikon text-2xl text-sea transition-transform">+</span></button>
+        <div class="faq-isi"><div><p class="pb-5 leading-relaxed text-ink/80">Tunai, transfer bank, dan QRIS. Pembayaran dilakukan saat cucian diantar kembali.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FORM PESAN ================= -->
+<section id="pesan" class="bg-ink py-20 text-white">
+  <div class="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-2">
+    <div>
+      <h2 class="font-display text-4xl font-extrabold leading-tight">Siap jemput cucianmu hari ini?</h2>
+      <p class="mt-4 max-w-md leading-relaxed text-white/80">Isi formulir di samping. Pesananmu langsung terkirim ke WhatsApp kami dan kurir akan mengonfirmasi jam jemput.</p>
+      <p class="mt-8 text-white/80">WhatsApp: <a class="font-bold text-sun underline" href="https://wa.me/6281234567890" target="_blank" rel="noopener">0812-3456-7890</a><br>Jam layanan: 07.00 sampai 20.00, setiap hari</p>
+    </div>
+
+    <form id="formPesan" class="space-y-5 rounded-3xl bg-white p-6 text-ink sm:p-8" novalidate>
+      <div>
+        <label for="nama" class="mb-1 block font-bold">Nama</label>
+        <input id="nama" type="text" class="w-full rounded-xl border-2 border-ink/20 px-4 py-3 focus:border-sea focus:outline-none" placeholder="Contoh: Nadia">
+        <p class="err mt-1 hidden text-sm text-coral">Isi nama kamu dulu.</p>
+      </div>
+      <div>
+        <label for="alamat" class="mb-1 block font-bold">Alamat jemput</label>
+        <textarea id="alamat" rows="3" class="w-full rounded-xl border-2 border-ink/20 px-4 py-3 focus:border-sea focus:outline-none" placeholder="Jalan, nomor rumah, patokan"></textarea>
+        <p class="err mt-1 hidden text-sm text-coral">Tulis alamat lengkap, minimal 10 huruf.</p>
+      </div>
+      <div>
+        <label for="layananForm" class="mb-1 block font-bold">Layanan</label>
+        <select id="layananForm" class="w-full rounded-xl border-2 border-ink/20 bg-white px-4 py-3 focus:border-sea focus:outline-none">
+          <option>Kiloan reguler</option><option>Kiloan kilat</option><option>Setrika saja</option><option>Selimut / bed cover</option><option>Sepatu</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full rounded-full bg-ink py-3.5 font-bold text-white transition hover:bg-sea">Kirim pesanan lewat WhatsApp</button>
+      <p id="statusForm" class="hidden text-center text-sm font-medium text-sea" role="status">Membuka WhatsApp...</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-ink text-white/70">
+  <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 border-t border-white/15 px-5 py-8 text-sm sm:flex-row">
+    <p>&copy; <span id="tahun">2026</span> Bilas Laundry. Semua hak dilindungi.</p>
+    <p>Dibuat sebagai tugas landing page.</p>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  // GANTI nomor WhatsApp di sini (format internasional, tanpa + dan tanpa 0 di depan)
+  const NOMOR_WA = "6281234567890";
+  const rupiah = n => "Rp" + n.toLocaleString("id-ID");
+  const $ = id => document.getElementById(id);
+
+  // ---------- 1. Menu mobile ----------
+  $("btnMenu").addEventListener("click", () => {
+    const buka = $("menuMobile").classList.toggle("hidden") === false;
+    $("btnMenu").setAttribute("aria-expanded", buka);
+  });
+  $("menuMobile").querySelectorAll("a").forEach(a => a.addEventListener("click", () => $("menuMobile").classList.add("hidden")));
+
+  // ---------- 2. Bayangan navbar saat halaman di-scroll ----------
+  addEventListener("scroll", () => $("nav").classList.toggle("shadow-md", scrollY > 10));
+
+  // ---------- 3. Kalkulator harga ----------
+  const LAYANAN = {
+    reguler: { nama: "Kiloan reguler", harga: 7000,  hari: 2 },
+    kilat:   { nama: "Kiloan kilat",   harga: 12000, hari: 0 },
+    setrika: { nama: "Setrika saja",   harga: 5000,  hari: 1 }
+  };
+  let pesanTerakhir = "";
+
+  function hitung() {
+    const kg = Number($("kg").value);
+    const pilih = document.querySelector('input[name="layanan"]:checked').value;
+    const l = LAYANAN[pilih];
+    const kgTagih = Math.max(kg, 3);                 // minimal 3 kg
+    const cuci = kgTagih * l.harga;
+    const ongkir = kg >= 5 ? 0 : 5000;               // gratis ongkir mulai 5 kg
+    const total = cuci + ongkir;
+
+    // Perkiraan selesai
+    let estimasi;
+    if (l.hari === 0) estimasi = "6 jam setelah dijemput";
+    else {
+      const d = new Date(); d.setDate(d.getDate() + l.hari);
+      estimasi = d.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" });
+    }
+
+    $("kgTampil").textContent = kg + " kg";
+    $("hCuci").textContent = rupiah(cuci);
+    $("hOngkir").textContent = ongkir === 0 ? "Gratis" : rupiah(ongkir);
+    $("hEstimasi").textContent = estimasi;
+    $("hTotal").textContent = rupiah(total);
+
+    pesanTerakhir = `Halo Bilas, saya mau pesan ${l.nama} sekitar ${kg} kg. Perkiraan total ${rupiah(total)}. Mohon info jam jemput.`;
+    $("btnWaHitung").href = `https://wa.me/${NOMOR_WA}?text=${encodeURIComponent(pesanTerakhir)}`;
+  }
+  $("kg").addEventListener("input", hitung);
+  document.querySelectorAll('input[name="layanan"]').forEach(r => r.addEventListener("change", hitung));
+  hitung();
+
+  // ---------- 4. FAQ (buka-tutup) ----------
+  document.querySelectorAll(".faq-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const isi = btn.nextElementSibling;
+      const buka = isi.classList.toggle("buka");
+      btn.setAttribute("aria-expanded", buka);
+      btn.querySelector(".faq-ikon").textContent = buka ? "\u2212" : "+";
+    });
+  });
+
+  // ---------- 5. Form pesanan: validasi lalu buka WhatsApp ----------
+  $("formPesan").addEventListener("submit", e => {
+    e.preventDefault();
+    const nama = $("nama"), alamat = $("alamat");
+    const salahNama = nama.value.trim().length < 2;
+    const salahAlamat = alamat.value.trim().length < 10;
+
+    // tampilkan / sembunyikan pesan error di bawah masing-masing kolom
+    nama.nextElementSibling.classList.toggle("hidden", !salahNama);
+    alamat.nextElementSibling.classList.toggle("hidden", !salahAlamat);
+    nama.classList.toggle("border-coral", salahNama);
+    alamat.classList.toggle("border-coral", salahAlamat);
+    if (salahNama || salahAlamat) return;
+
+    const teks = `Halo Bilas, saya ${nama.value.trim()}. Mau pesan ${$("layananForm").value}. Alamat jemput: ${alamat.value.trim()}.`;
+    $("statusForm").classList.remove("hidden");
+    window.open(`https://wa.me/${NOMOR_WA}?text=${encodeURIComponent(teks)}`, "_blank", "noopener");
+  });
+
+  // ---------- 6. Tahun otomatis di footer ----------
+  $("tahun").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
